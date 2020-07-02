@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+
+{% block title %}Lista de tarefas{% endblock title %}
+
+{% block conteudo %}
+    {# offset-1 --> Centralizado nas 10 colunas #}
+    <div class="offset-1 col-10 list-div">
+            <h1>Lista de Tarefas</h1>
+            <div class="container dashboard">
+                <div class="col-4 dashboard-box" id="dashboard-lastdays">
+                    <h4>Finalizadas nos ultimos 30 dias</h4>
+                    <span>{{ taskrecently }}</span>                
+                </div>
+                <div class="col-4 dashboard-box" id="dashboard-done">
+                    <h4>Tarefas finalizadas</h4>
+                    <span>{{ tasksdone }}</span>                
+                </div>
+                <div class="col-4 dashboard-box" id="dashboard-doing">
+                    <h4>Tarefas para fazer</h4>
+                    <span>{{ tasksdoing }}</span>                
+                </div>
+            </div>
+
+            <a href="newtask/">
+                <div class="col-2 add-div">
+                    <i class='fas fa-plus'>Adicionar Tarefa</i>
+                </div>
+            </a>
+            <div class="col-9 search-div">
+                <form method="GET" id="search-form">
+                    <input class="form-control" type="text" id='search' name='search' placeholder='Digite o nome da tarefa para buscar' value="{{request.GET.search }}">
+                    <i class='fas fa-search' id="search-btn"></i>
+                </form>
+            </div>
+
+            <div class="col-12 filter-div">
+                <span>Filtrar por:</span>
+                <select name="filter" id="filter" class="form-control">
+                    <option value="">Escolha uma opção...</option>
+                    <option value="done">Tarefas concluídas</option>
+                    <option value="doing">Tarefas a fazer</option>
+                </select>
+            </div>
+
+            {# Verifica se existe messages, depois coloca dentro de um for para caso exstirem mais que uma #}
+            {% if messages %}
+                <ul class="messages">
+                    {% for message in messages %}
+                        <li {% if message.tags %} class='alert alert-{{ message.tags }}'{% endif %}>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            <ul class='task-list'>
+                {% for task in tasks %}
+                {% if task.done == 'doing' %}
+                    <li class='task-item'>
+                {% else %}
+                    <li class="task-item done">
+                {% endif %}
+                        <span><a href="/tasks/{{task.id}}">{{task.title}}</a></span>
+                        <span data-toggle="modal" data-target="#staticBackdrop"><i class="fas fa-trash"></i></span>
+                        <a href="edit/{{ task.id }}"><span><i class="fas fa-edit"></i></span></a>
+                        <a href="changestatus/{{ task.id }}"><span><i class="fas fa-check"></i></span></a>
+                    </li>
+                
+                    
+                    <!-- Modal de confirmação -->
+                        <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="staticBackdropLabel">ESSA É UMA AÇÃO PERMANENTE</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                <span>Deseja mesmo deletar {{ task.title }}</span>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                                    <a href="delete/{{ task.id }}" class="delete-confirm"><button type="button" class="btn btn-primary">Confirmar</button></a>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+
+                {% endfor %}
+        
+            </ul>
+
+            <div class="pagination">
+                <span class="step-links">
+                    {# Verifica se existe pagina anterior #}
+                    {% if tasks.has_previous %}
+                        <a href="?page={{ tasks.previous_page_number }}"><i class="fas fa-arrow-left"></i></a>
+                    {% endif %}
+
+                    {% if tasks.paginator.num_pages %}
+                        <span class="current">
+                            {{ tasks.number }} de {{ tasks.paginator.num_pages }}
+                        </span>
+                    {% endif %}
+
+                    {# Verifica se existe pagina posterior #}
+                    {% if tasks.has_next %}
+                        <a href="?page={{ tasks.next_page_number }}"><i class="fas fa-arrow-right"></i></a>
+                    {% endif %}
+                </span>
+            </div>
+
+<h1></h1>
+    </div>
+
+
+{% endblock conteudo %}
+

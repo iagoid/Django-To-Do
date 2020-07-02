@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+
+{% block title %}{{ task.title }}{% endblock title %}
+
+{% block conteudo %}
+    {# offset-1 --> Centralizado nas 10 colunas #}
+    <div class="offset-1 col-10 list-div">
+            <h1>Editando {{ task.title }}:</h1>
+            <form method="POST">
+                {# Padrão para forms do Django #}
+                {% csrf_token %}
+                {# Adiciona o form criado um em cada linha #}
+                {{ form|crispy }}
+                <input type="submit" class="btn btn-success" value="Criar Tarefa">
+            </form>
+    </div>
+{% endblock conteudo %}
+

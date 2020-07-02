@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{# Chama o crispy #}
+{% load crispy_forms_tags %}
+
+{% block title %}Registrar no To Do List{% endblock title %}
+
+{% block conteudo %}
+    {# offset-1 --> Centralizado nas 10 colunas #}
+    <div class="row">
+        <div class="div col-md-4 offset-md-4">
+            <div class="card auth-card">
+                <div class="card-body">
+                    <h4 class="card-title text-center">Registrar no To Do List</h4>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="next" value="{{ next }}">
+
+                        {{ form|crispy }}
+                        <button type="submit" class="btn btn-primary btn-block">Registrar</button>
+                    </form>
+                    <p class='change-form-p'><a href="/accounts/login"> Já tem uma conta? </a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock conteudo %}
+
+ 
